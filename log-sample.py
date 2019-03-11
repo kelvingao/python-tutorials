@@ -1,4 +1,5 @@
 import logging
+import employee
 """
 DEBUG:    Detialed information, typically of interest of only when diagnosing problems.
 INFO:     Confirmation that things are working as expected.
@@ -10,8 +11,13 @@ CRITICAL: A serious error, indicating that the program itself may be unable to c
 https://docs.python.org/3/library/logging.html#logrecord-attributes
 """
 
-logging.basicConfig(filename='test.log', level=logging.DEBUG,
-        format='%(asctime)s:%(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.ERROR)
+
+file_handler = logging.FileHandler(filename='sample.log')
+file_handler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(name)s: %(message)s'))
+logger.addHandler(file_handler)
+
 def add(x, y):
     """ Add function"""
     return x + y
@@ -25,22 +31,26 @@ def multiply(x, y):
     return x * y
 
 def divide(x, y):
-    """ Divide function"""
-    return x / y
+    """ Divide function"""  
+    try:
+        result = x / y
+    except ZeroDivisionError:
+        logger.exception('Tried to divide by zero')
+    else:
+        return result
 
 
 num_1 = 10
-num_2 = 10
+num_2 = 0
 
 add_result = add(num_1, num_2)
-logging.debug('Add: {} + {} = {}'.format(num_1, num_2, add_result))
-
+logger.debug('Add: {} + {} = {}'.format(num_1, num_2, add_result))
 
 sub_result = subtract(num_1, num_2)
-logging.debug('Sub: {} + {} = {}'.format(num_1, num_2, sub_result))
+logger.debug('Sub: {} + {} = {}'.format(num_1, num_2, sub_result))
 
 mul_result = multiply(num_1, num_2)
-logging.debug('Mul: {} + {} = {}'.format(num_1, num_2, mul_result))
+logger.debug('Mul: {} + {} = {}'.format(num_1, num_2, mul_result))
 
 div_result = divide(num_1, num_2)
-logging.debug('Div: {} + {} = {}'.format(num_1, num_2, div_result))
+logger.debug('Div: {} + {} = {}'.format(num_1, num_2, div_result))
